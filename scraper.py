@@ -9,6 +9,7 @@ import io
 BASE_URL = 'http://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognisedFpi=yes&intmId=26'
 phantomjs_path = os.path.abspath("G:\phantomjs\\bin\phantomjs.exe")
 print(phantomjs_path)
+All_list_data = []
 
 def cler_file(file_name):
     with open(file_name, 'r') as f_input, open('data2.csv', 'w',newline='') as f_output:
@@ -34,6 +35,7 @@ def write_svc(data):
         writer.writeheader()
         # запись нескольких строк
         writer.writerows(data)
+
         print("write Ok!")
 
 def replace(st):
@@ -91,8 +93,11 @@ def parse_url(html, n):
         except IndexError as e:
             print('line=', n ,'...', e)
         list_data.append(dic)
-        #print(dic)
-    write_svc(list_data)
+    print(list_data)
+    #write_svc(list_data)
+
+    global All_list_data
+    All_list_data = All_list_data + list_data
     #return list_element
 
 def next_page_link(driver, number_page):
@@ -129,7 +134,7 @@ def get_htmlN(n,N,driver):
     N_ = N
     driver_ = driver
     next_page_link(driver, n_)
-    time.sleep(1)
+    time.sleep(14)
     html = driver.page_source
     #time.sleep(3)
     parse_url(html, n_)
@@ -199,8 +204,11 @@ def main():
     t10.join()
     t11.join()
 
+    global All_list_data
+    write_svc(All_list_data)
+
     time2 = time.time()
-    cler_file("Data.csv")
+    #cler_file("Data.csv")
     print(time2 - time1)
 
 
